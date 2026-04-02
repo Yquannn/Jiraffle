@@ -1,0 +1,14 @@
+server:
+  port: 8082   # each service gets its own port
+
+spring:
+  application:
+    name: ads-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ads_db
+    username: ${DB_USER}
+    password: ${DB_PASS}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
