@@ -5,9 +5,9 @@ spring:
   application:
     name: analytics-service
   datasource:
-    url: jdbc:postgresql://postgres:5432/jiraffle_analytics
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${ANALYTICS_DB_NAME:jiraffle_analytics}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

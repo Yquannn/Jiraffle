@@ -5,9 +5,9 @@ spring:
   application:
     name: task-service
   datasource:
-    url: jdbc:postgresql://postgres:5432/jiraffle_tasks
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${TASK_DB_NAME:jiraffle_tasks}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
