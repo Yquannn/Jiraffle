@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
@@ -28,3 +29,5 @@ export default defineConfig([
     },
   },
 ])
+=======
+>>>>>>> parent of 79939d3 (Merge branch 'staging/integration' into don-dev-branch)
