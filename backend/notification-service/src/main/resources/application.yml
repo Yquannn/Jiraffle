@@ -1,0 +1,7 @@
+smtp:
+  host: ${SMTP_HOST}
+  port: ${SMTP_PORT}
+  user: ${SMTP_USER}
+  password: ${SMTP_PASSWORD}
+  from-email: ${SMTP_FROM_EMAIL}
+  from-name: ${SMTP_FROM_NAME}
