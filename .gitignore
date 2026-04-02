@@ -54,3 +54,8 @@ coverage/
 *.swp
 *.swo
 *~
+
+# Environment variables
+.env
+.env.*
+!.env.example

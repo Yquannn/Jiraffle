@@ -1,0 +1,16 @@
+app:
+  name: ${APP_NAME}
+  url: ${APP_URL}
+
+db:
+  host: ${DB_HOST}
+  port: ${DB_PORT}
+  name: ${DB_NAME}
+  user: ${DB_USER}
+  password: ${DB_PASSWORD}
+
+jwt:
+  secret: ${JWT_SECRET}
+  refresh-secret: ${JWT_REFRESH_SECRET}
+  expires-in: ${JWT_EXPIRES_IN}
+  refresh-expires-in: ${JWT_REFRESH_EXPIRES_IN}

@@ -1,0 +1,5 @@
+git:
+  provider: ${GIT_PROVIDER}
+  token: ${GIT_TOKEN}
+  repo-owner: ${GIT_REPO_OWNER}
+  repo-name: ${GIT_REPO_NAME}
