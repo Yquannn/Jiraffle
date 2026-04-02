@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
@@ -34,3 +35,5 @@
       "@hooks/*": ["src/hooks/*"]
     }
 }
+=======
+>>>>>>> parent of 79939d3 (Merge branch 'staging/integration' into don-dev-branch)

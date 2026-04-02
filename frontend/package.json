@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "frontend",
   "private": true,
@@ -39,3 +40,5 @@
     "printWidth": 100
   }
 }
+=======
+>>>>>>> parent of 79939d3 (Merge branch 'staging/integration' into don-dev-branch)
