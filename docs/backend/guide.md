@@ -1,0 +1,187 @@
+# Jiraffle Backend Documentation
+
+## Overview
+
+Jiraffle is a microservices-based project management system built with Spring Boot and Maven. The backend consists of multiple independent microservices, each handling specific business domains, along with a shared common library for cross-cutting concerns.
+
+## Architecture
+
+### Microservices
+
+The backend is organized into the following microservices:
+
+- **api-gateway** - API Gateway service routing external requests to appropriate microservices
+- **auth-service** - Authentication and authorization service (JWT-based)
+- **ads-service** - Advertisement management service
+- **analytics-service** - Analytics and reporting service
+- **automation-service** - Automation and workflow execution service
+- **docs-service** - Document management service
+- **notification-service** - Notification delivery service (email, SMS, push)
+- **repo-service** - Repository and version control service
+- **task-service** - Task and issue management service
+- **common-lib** - Shared library with common utilities (not a service)
+
+### Module Structure
+
+The backend is organized as a Maven multi-module project. All modules are defined in `backend/pom.xml`:
+
+```xml
+<modules>
+    <module>common-lib</module>
+    <module>ads-service</module>
+    <module>api-gateway</module>
+    <module>analytics-service</module>
+    <module>auth-service</module>
+    <module>automation-service</module>
+    <module>docs-service</module>
+    <module>notification-service</module>
+    <module>repo-service</module>
+    <module>task-service</module>
+</modules>
+```
+
+## Common Library
+
+The `common-lib` module is a shared library (packaged as JAR, not a service) that contains cross-cutting concerns and shared code:
+
+### Contents
+
+- **Constants** - Application-wide constant values
+- **Entities** - JPA entities and domain models
+- **DTOs** - Data Transfer Objects for inter-service communication
+- **Exceptions** - Common exception classes
+- **Utility Functions** - Helper and utility methods
+
+### Usage
+
+To use the common library in any microservice, add the following dependency to your service's `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>com.yourcompany</groupId>
+    <artifactId>common</artifactId>
+    <version>${project.version}</version>
+</dependency>
+```
+
+### Example Import
+
+```java
+import com.pms.common.entities.Message;
+```
+
+## Building the Project
+
+### Build All Modules
+
+```bash
+mvn clean install
+```
+
+> **Note**: This command must be run from the `backend/` directory.
+
+### Build a Specific Module
+
+```bash
+mvn clean install -pl module-name
+```
+
+## Running Services
+
+### Running the API Gateway
+
+```bash
+mvn spring-boot:run -pl api-gateway
+```
+
+The API Gateway will start and listen for requests on its configured port.
+
+### Running Individual Services
+
+```bash
+mvn spring-boot:run -pl service-name
+```
+
+Replace `service-name` with any of the microservices listed above.
+
+## Configuration
+
+### Application Configuration
+
+Each microservice includes an `application.yml` configuration file located in `src/main/resources/`. This file contains service-specific configurations including:
+
+- Server port
+- Database connection settings
+- External service URLs
+- Logging configuration
+- Security settings
+
+### Updating Service URLs
+
+When running services locally (outside of containers), update the service URLs in `application.yml`:
+
+**Example - Default (Docker)**
+```yaml
+auth-service:
+  uri: http://auth-service:8083
+```
+
+**Local Development**
+```yaml
+auth-service:
+  uri: http://localhost:8083
+```
+
+## Development Guidelines
+
+### Packaging Configuration
+
+**Microservice** - Use standard JAR packaging:
+```xml
+<packaging>jar</packaging>
+```
+
+**Shared Library** - Also uses JAR packaging, but is not intended to be run as a standalone service.
+
+### Best Practices
+
+1. Put shared code in `common-lib`, not in individual services
+2. Keep services loosely coupled with well-defined APIs
+3. Use DTOs for inter-service communication
+4. Document custom exceptions and error handling
+5. Follow Spring Boot conventions for configuration
+
+## Deployment
+
+Services are containerized using Docker. See individual `Dockerfile` configurations in each service directory.
+
+### Docker Deployment
+
+All services can be deployed using Docker Compose:
+
+```bash
+docker-compose up
+```
+
+Refer to `docker-compose.yml` and `docker-compose.override.yml` in the project root for configuration details.
+
+## Dependencies and Versions
+
+Dependency versions are managed at the parent project level in `backend/pom.xml`. All microservices inherit these versions, ensuring consistency across the application.
+
+## Testing
+
+Run backend tests using:
+
+```bash
+./scripts/run-backend-tests.sh
+```
+
+## Additional Resources
+
+- See [module-dependencies.md](../module-dependencies.md) for detailed micro-service dependencies
+- See [ADR-001-service-boundaries.md](../adr/ADR-001-service-boundaries.md) for service architecture decisions
+- See [ADR-002-authentication-and-jwt.md](../adr/ADR-002-authentication-and-jwt.md) for authentication details 
+
+
+
