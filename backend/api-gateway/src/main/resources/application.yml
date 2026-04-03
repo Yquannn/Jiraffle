@@ -10,7 +10,7 @@ spring:
     gateway:
       routes:
         - id: ads-service
-          uri: http://ads-service:8081
+          uri: http://localhost:8081
           predicates:
             - Path=/api/ads/**
           filters:

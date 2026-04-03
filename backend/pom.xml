@@ -28,6 +28,7 @@
         <module>docs-service</module>
         <module>notification-service</module>
         <module>repo-service</module>
+        <module>task-service</module>
     </modules>
 
     <properties>
