@@ -153,9 +153,51 @@ auth-service:
 
 ## Deployment
 
-Services are containerized using Docker. Each backend service has its own `Dockerfile`, and the API gateway should communicate with the other services over a shared Docker network.
+Services are containerized using Docker. Each backend service has its own `Dockerfile`, and the API gateway communicates with other services over a shared Docker network.
 
-### Docker Deployment
+### Docker Compose Deployment
+
+The recommended way to deploy the backend services is using Docker Compose. The `backend/docker-compose.yml` file defines all services and their dependencies.
+
+#### Prerequisites
+
+1. Ensure Docker and Docker Compose are installed on your system.
+2. Navigate to the `/` directory.
+
+#### Starting Services
+
+```bash
+docker-compose -f backend/docker-compose.yml up
+```
+
+This will start all microservices defined in the compose file. The services will be available on their respective ports (8080 for API Gateway, 8081 for ads-service, etc.).
+
+#### Stopping Services
+
+```bash
+docker-compose down
+```
+
+#### Viewing Logs
+
+```bash
+docker-compose logs -f [service-name]
+```
+
+Replace `[service-name]` with the name of the service (e.g., `api-gateway`, `auth-service`).
+
+#### Infrastructure Services
+
+The docker-compose file includes commented-out infrastructure services (PostgreSQL, Redis, MinIO). To enable them:
+
+1. Uncomment the relevant service blocks in `backend/docker-compose.yml`
+2. Uncomment the corresponding environment variables in each service
+3. Uncomment the volume definitions at the bottom of the file
+4. Run `docker-compose up -d` to start with infrastructure
+
+### Manual Docker Deployment (Alternative)
+
+If you prefer manual Docker commands:
 
 1. Create a shared network for the services.
 

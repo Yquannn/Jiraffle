@@ -1,0 +1,312 @@
+version: '3.9'
+
+services:
+  # ============================================
+  # Infrastructure Services
+  # ============================================
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: jiraffle-postgres
+  #   environment:
+  #     POSTGRES_USER: ${DB_USER:-postgres}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #     - ./../../infra/postgres/init:/docker-entrypoint-initdb.d
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   networks:
+  #     - jiraffle-network
+  #   restart: unless-stopped
+
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: jiraffle-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   networks:
+  #     - jiraffle-network
+  #   restart: unless-stopped
+
+  # minio:
+  #   image: minio/minio:latest
+  #   container_name: jiraffle-minio
+  #   environment:
+  #     MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+  #     MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+  #   ports:
+  #     - "9000:9000"
+  #     - "9001:9001"
+  #   volumes:
+  #     - minio_data:/data
+  #   command: server /data --console-address ":9001"
+  #   networks:
+  #     - jiraffle-network
+  #   restart: unless-stopped
+
+  # ============================================
+  # API Gateway (Entry Point)
+  # ============================================
+  api-gateway:
+    build:
+      context: ../
+      dockerfile: backend/api-gateway/Dockerfile
+    container_name: jiraffle-api-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-service
+      - ads-service
+      - analytics-service
+      - task-service
+      - repo-service
+      - docs-service
+      - notification-service
+      - automation-service
+    networks:
+      - jiraffle-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # ============================================
+  # Core Services
+  # ============================================
+  auth-service:
+    build:
+      context: ../
+      dockerfile: backend/auth-service/Dockerfile
+    container_name: jiraffle-auth-service
+    # environment:
+    #   SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+    #   DB_HOST: postgres
+    #   DB_PORT: 5432
+    #   DB_USER: ${DB_USER:-postgres}
+    #   DB_PASSWORD: ${DB_PASSWORD:-postgres}
+    #   DB_NAME: ${AUTH_DB_NAME:-jiraffle_auth}
+    #   JWT_SECRET: ${JWT_SECRET:-your-jwt-secret-key-change-in-production}
+    #   JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
+    #   REDIS_HOST: redis
+    #   REDIS_PORT: 6379
+    ports:
+      - "8083:8083"
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
+    #   redis:
+    #     condition: service_healthy
+    networks:
+      - jiraffle-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  ads-service:
+    build:
+      context: ../
+      dockerfile: backend/ads-service/Dockerfile
+    container_name: jiraffle-ads-service
+    # environment:
+      # SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+      # DB_HOST: postgres
+      # DB_PORT: 5432
+      # DB_USER: ${DB_USER:-postgres}
+      # DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      # DB_NAME: ${ADS_DB_NAME:-jiraffle_ads}
+    ports:
+      - "8081:8081"
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
+    networks:
+      - jiraffle-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  analytics-service:
+    build:
+      context: ../
+      dockerfile: backend/analytics-service/Dockerfile
+    container_name: jiraffle-analytics-service
+    # environment:
+    #   SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+    #   DB_HOST: postgres
+    #   DB_PORT: 5432
+    #   DB_USER: ${DB_USER:-postgres}
+    #   DB_PASSWORD: ${DB_PASSWORD:-postgres}
+    #   DB_NAME: ${ANALYTICS_DB_NAME:-jiraffle_analytics}
+    ports:
+      - "8082:8082"
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
+    networks:
+      - jiraffle-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  task-service:
+    build:
+      context: ../
+      dockerfile: backend/task-service/Dockerfile
+    container_name: jiraffle-task-service
+    # environment:
+    #   SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+    #   DB_HOST: postgres
+    #   DB_PORT: 5432
+    #   DB_USER: ${DB_USER:-postgres}
+    #   DB_PASSWORD: ${DB_PASSWORD:-postgres}
+    #   DB_NAME: ${TASK_DB_NAME:-jiraffle_tasks}
+    ports:
+      - "8084:8084"
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
+    networks:
+      - jiraffle-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # ============================================
+  # Integration Services
+  # ============================================
+  repo-service:
+    build:
+      context: ../
+      dockerfile: backend/repo-service/Dockerfile
+    container_name: jiraffle-repo-service
+    # environment:
+    #   SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+    #   MINIO_HOST: minio
+    #   MINIO_PORT: 9000
+    #   MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+    #   MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    ports:
+      - "8085:8085"
+    # depends_on:
+    #   minio:
+    #     condition: service_started
+    networks:
+      - jiraffle-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  docs-service:
+    build:
+      context: ../
+      dockerfile: backend/docs-service/Dockerfile
+    container_name: jiraffle-docs-service
+    # environment:
+    #   SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+    ports:
+      - "8086:8086"
+    # depends_on:
+    #   - api-gateway
+    networks:
+      - jiraffle-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  notification-service:
+    build:
+      context: ../
+      dockerfile: backend/notification-service/Dockerfile
+    container_name: jiraffle-notification-service
+    # environment:
+    #   SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+    #   REDIS_HOST: redis
+    #   REDIS_PORT: 6379
+    ports:
+      - "8087:8087"
+    # depends_on:
+    #   redis:
+    #     condition: service_healthy
+    networks:
+      - jiraffle-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8087/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  automation-service:
+    build:
+      context: ../
+      dockerfile: backend/automation-service/Dockerfile
+    container_name: jiraffle-automation-service
+    # environment:
+    #   SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+    #   REDIS_HOST: redis
+    #   REDIS_PORT: 6379
+    ports:
+      - "8088:8088"
+    # depends_on:
+    #   redis:
+    #     condition: service_healthy
+    networks:
+      - jiraffle-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+# volumes:
+#   postgres_data:
+#   redis_data:
+#   minio_data:
+
+networks:
+  jiraffle-network:
+    driver: bridge
