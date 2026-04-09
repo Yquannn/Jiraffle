@@ -153,17 +153,62 @@ auth-service:
 
 ## Deployment
 
-Services are containerized using Docker. See individual `Dockerfile` configurations in each service directory.
+Services are containerized using Docker. Each backend service has its own `Dockerfile`, and the API gateway should communicate with the other services over a shared Docker network.
 
 ### Docker Deployment
 
-All services can be deployed using Docker Compose:
+1. Create a shared network for the services.
 
 ```bash
-docker-compose up
+docker network create jiraffle-net
 ```
 
-Refer to `docker-compose.yml` and `docker-compose.override.yml` in the project root for configuration details.
+2. Build each backend image from the repository root. Use the root of the repository as the Docker build context so the service Dockerfiles can access the full Maven reactor in `backend/`.
+
+```bash
+docker build -t jiraffle-api -f backend/api-gateway/Dockerfile .
+docker build -t jiraffle-ads -f backend/ads-service/Dockerfile .
+docker build -t jiraffle-analytics -f backend/analytics-service/Dockerfile .
+docker build -t jiraffle-auth -f backend/auth-service/Dockerfile .
+docker build -t jiraffle-automation -f backend/automation-service/Dockerfile .
+docker build -t jiraffle-docs -f backend/docs-service/Dockerfile .
+docker build -t jiraffle-notification -f backend/notification-service/Dockerfile .
+docker build -t jiraffle-repo -f backend/repo-service/Dockerfile .
+docker build -t jiraffle-task -f backend/task-service/Dockerfile .
+```
+
+3. Run the containers on the same Docker network so services can reach each other by container name.
+
+```bash
+docker run -d --name jiraffle-api --network jiraffle-net -p 8080:8080 jiraffle-api
+docker run -d --name ads-service --network jiraffle-net jiraffle-ads
+docker run -d --name analytics-service --network jiraffle-net jiraffle-analytics
+docker run -d --name auth-service --network jiraffle-net jiraffle-auth
+docker run -d --name automation-service --network jiraffle-net jiraffle-automation
+docker run -d --name docs-service --network jiraffle-net jiraffle-docs
+docker run -d --name notification-service --network jiraffle-net jiraffle-notification
+docker run -d --name repo-service --network jiraffle-net jiraffle-repo
+docker run -d --name task-service --network jiraffle-net jiraffle-task
+```
+
+4. Verify service-to-service connectivity from inside the gateway container.
+
+```bash
+docker exec jiraffle-api curl http://ads-service:8081/hello
+```
+
+5. Inspect the running containers and network when troubleshooting.
+
+```bash
+docker ps
+docker network inspect jiraffle-net
+```
+
+6. Remove a container when you need to recreate it.
+
+```bash
+docker rm -f container-id-or-container-name
+```
 
 ## Dependencies and Versions
 
