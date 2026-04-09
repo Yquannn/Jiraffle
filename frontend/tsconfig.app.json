@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
@@ -23,17 +22,14 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
-  },
-  "include": ["src"],
-
-   "baseUrl": ".",
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
     "paths": {
       "@components/*": ["src/components/*"],
       "@services/*": ["src/services/*"],
       "@store/*": ["src/store/*"],
       "@hooks/*": ["src/hooks/*"]
     }
+  },
+  "include": ["src"]
 }
-=======
->>>>>>> parent of 79939d3 (Merge branch 'staging/integration' into don-dev-branch)

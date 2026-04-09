@@ -1,0 +1,73 @@
+x-backend-dev: &backend-dev
+  image: maven:3.9.9-eclipse-temurin-21
+  working_dir: /workspace/backend
+  env_file:
+    - .env
+  volumes:
+    - .:/workspace
+    - maven-cache:/root/.m2
+  environment:
+    SPRING_PROFILES_ACTIVE: dev
+    SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+    SPRING_DEVTOOLS_RESTART_POLL_INTERVAL: 1s
+    SPRING_DEVTOOLS_RESTART_QUIET_PERIOD: 400ms
+
+services:
+  api-gateway:
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl api-gateway -am spring-boot:run
+
+  ads-service:
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl ads-service -am spring-boot:run
+
+  analytics-service:
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl analytics-service -am spring-boot:run
+
+  auth-service:
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl auth-service -am spring-boot:run
+
+  task-service:
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl task-service -am spring-boot:run
+
+  repo-service:
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl repo-service -am spring-boot:run
+
+  docs-service:
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl docs-service -am spring-boot:run
+
+  notification-service:
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl notification-service -am spring-boot:run
+
+  automation-service:
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl automation-service -am spring-boot:run
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /workspace/frontend
+    volumes:
+      - ./frontend:/workspace/frontend
+      - frontend-node-modules:/workspace/frontend/node_modules
+    command: sh -c "npm install && npm run dev"
+    ports: !override
+      - "5173:5173"
+    restart: !reset null
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: "500"
+      VITE_HOST: "0.0.0.0"
+      VITE_PORT: "5173"
+      VITE_HMR_HOST: "localhost"
+      VITE_HMR_PORT: "5173"
+      VITE_HMR_CLIENT_PORT: "5173"
+
+volumes:
+  maven-cache:
+  frontend-node-modules:
