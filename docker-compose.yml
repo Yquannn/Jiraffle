@@ -1,69 +1,69 @@
 services:
   api-gateway:
-    image: myapp/gateway:latest
+    image: jiraffle-api:latest
     ports:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
 
   ads-service:
-    image: myapp/ads-service:latest
+    image: mjiraffle-ads:latest
     ports:
       - "8081:8081"
     environment:
       SPRING_PROFILES_ACTIVE: prod
 
   analytics-service:
-    image: myapp/analytics-service:latest
+    image: jiraffle-analytics:latest
     ports:
       - "8082:8082"
     environment:
       SPRING_PROFILES_ACTIVE: prod
 
   auth-service:
-    image: myapp/auth-service:latest
+    image: jiraffle-auth:latest
     ports:
       - "8083:8083"
     environment:
       SPRING_PROFILES_ACTIVE: prod
 
   task-service:
-    image: myapp/task-service:latest
+    image: jiraffle-task:latest
     ports:
       - "8084:8084"
     environment:
       SPRING_PROFILES_ACTIVE: prod
 
   repo-service:
-    image: myapp/repo-service:latest
+    image: jiraffle-repo:latest
     ports:
       - "8085:8085"
     environment:
       SPRING_PROFILES_ACTIVE: prod
 
   docs-service:
-    image: myapp/docs-service:latest
+    image: jiraffle-docs:latest
     ports:
       - "8086:8086"
     environment:
       SPRING_PROFILES_ACTIVE: prod
 
   notification-service:
-    image: myapp/notification-service:latest
+    image: jiraffle-notification:latest
     ports:
       - "8087:8087"
     environment:
       SPRING_PROFILES_ACTIVE: prod
 
   automation-service:
-    image: myapp/automation-service:latest
+    image: jiraffle-automation:latest
     ports:
       - "8088:8088"
     environment:
       SPRING_PROFILES_ACTIVE: prod
 
   frontend:
-    image: myapp/frontend:latest
+    image: jiraffle-frontend:latest
     ports:
       - "80:80"
     restart: unless-stopped

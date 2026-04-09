@@ -13,6 +13,6 @@ public class AdsController {
 
     @RequestMapping("/hello")
     public Message Hello() {
-        return new Message("healr");
+        return new Message("healrss");
     }
 }

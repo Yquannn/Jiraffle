@@ -1,124 +1,73 @@
+x-backend-dev: &backend-dev
+  image: maven:3.9.9-eclipse-temurin-21
+  working_dir: /workspace/backend
+  env_file:
+    - .env
+  volumes:
+    - .:/workspace
+    - maven-cache:/root/.m2
+  environment:
+    SPRING_PROFILES_ACTIVE: dev
+    SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+    SPRING_DEVTOOLS_RESTART_POLL_INTERVAL: 1s
+    SPRING_DEVTOOLS_RESTART_QUIET_PERIOD: 400ms
+
 services:
   api-gateway:
-    build:
-      context: ./api-gateway
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./api-gateway/src:/workspace/src
-      - ./api-gateway/target:/workspace/target
-      - maven-cache:/root/.m2
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      SERVER_PORT: 8080
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl api-gateway -am spring-boot:run
 
   ads-service:
-    build:
-      context: ./ads-service
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./ads-service/src:/workspace/src
-      - ./ads-service/target:/workspace/target
-      - maven-cache:/root/.m2
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      SERVER_PORT: 8081
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl ads-service -am spring-boot:run
 
   analytics-service:
-    build:
-      context: ./analytics-service
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./analytics-service/src:/workspace/src
-      - ./analytics-service/target:/workspace/target
-      - maven-cache:/root/.m2
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      SERVER_PORT: 8082
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl analytics-service -am spring-boot:run
 
   auth-service:
-    build:
-      context: ./auth-service
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./auth-service/src:/workspace/src
-      - ./auth-service/target:/workspace/target
-      - maven-cache:/root/.m2
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      SERVER_PORT: 8083
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl auth-service -am spring-boot:run
 
   task-service:
-    build:
-      context: ./task-service
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./task-service/src:/workspace/src
-      - ./task-service/target:/workspace/target
-      - maven-cache:/root/.m2
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      SERVER_PORT: 8084
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl task-service -am spring-boot:run
 
   repo-service:
-    build:
-      context: ./repo-service
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./repo-service/src:/workspace/src
-      - ./repo-service/target:/workspace/target
-      - maven-cache:/root/.m2
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      SERVER_PORT: 8085
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl repo-service -am spring-boot:run
 
   docs-service:
-    build:
-      context: ./docs-service
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./docs-service/src:/workspace/src
-      - ./docs-service/target:/workspace/target
-      - maven-cache:/root/.m2
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      SERVER_PORT: 8086
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl docs-service -am spring-boot:run
 
   notification-service:
-    build:
-      context: ./notification-service
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./notification-service/src:/workspace/src
-      - ./notification-service/target:/workspace/target
-      - maven-cache:/root/.m2
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      SERVER_PORT: 8087
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl notification-service -am spring-boot:run
 
   automation-service:
-    build:
-      context: ./automation-service
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./automation-service/src:/workspace/src
-      - ./automation-service/target:/workspace/target
-      - maven-cache:/root/.m2
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      SERVER_PORT: 8088
+    <<: *backend-dev
+    command: mvn -f pom.xml -pl automation-service -am spring-boot:run
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.dev
+    image: node:20-alpine
+    working_dir: /workspace/frontend
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    ports:
+      - ./frontend:/workspace/frontend
+      - frontend-node-modules:/workspace/frontend/node_modules
+    command: sh -c "npm install && npm run dev"
+    ports: !override
       - "5173:5173"
-      - "24678:24678"
+    restart: !reset null
     environment:
+      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: "500"
       VITE_HOST: "0.0.0.0"
+      VITE_PORT: "5173"
+      VITE_HMR_HOST: "localhost"
+      VITE_HMR_PORT: "5173"
+      VITE_HMR_CLIENT_PORT: "5173"
 
 volumes:
   maven-cache:
+  frontend-node-modules:

@@ -230,3 +230,37 @@ Run backend tests using:
 
 
 
+## How to Test the Frontend with Hot reload
+
+Start only the frontend:
+
+```bash
+docker compose up frontend
+```
+
+Then open:
+
+```text
+http://localhost:5173
+```
+
+
+## How to Test a Backend Service
+
+The easiest backend service to verify first is:
+
+- `api-gateway`
+
+It is a good first check because it is not currently configured like the database-backed services.
+
+Start it with:
+
+```bash
+docker compose up api-gateway
+```
+
+To watch logs:
+
+```bash
+docker compose logs -f api-gateway
+```
