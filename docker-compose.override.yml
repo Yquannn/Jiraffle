@@ -1,0 +1,124 @@
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./api-gateway/src:/workspace/src
+      - ./api-gateway/target:/workspace/target
+      - maven-cache:/root/.m2
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8080
+
+  ads-service:
+    build:
+      context: ./ads-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./ads-service/src:/workspace/src
+      - ./ads-service/target:/workspace/target
+      - maven-cache:/root/.m2
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8081
+
+  analytics-service:
+    build:
+      context: ./analytics-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./analytics-service/src:/workspace/src
+      - ./analytics-service/target:/workspace/target
+      - maven-cache:/root/.m2
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8082
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./auth-service/src:/workspace/src
+      - ./auth-service/target:/workspace/target
+      - maven-cache:/root/.m2
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8083
+
+  task-service:
+    build:
+      context: ./task-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./task-service/src:/workspace/src
+      - ./task-service/target:/workspace/target
+      - maven-cache:/root/.m2
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8084
+
+  repo-service:
+    build:
+      context: ./repo-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./repo-service/src:/workspace/src
+      - ./repo-service/target:/workspace/target
+      - maven-cache:/root/.m2
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8085
+
+  docs-service:
+    build:
+      context: ./docs-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./docs-service/src:/workspace/src
+      - ./docs-service/target:/workspace/target
+      - maven-cache:/root/.m2
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8086
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./notification-service/src:/workspace/src
+      - ./notification-service/target:/workspace/target
+      - maven-cache:/root/.m2
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8087
+
+  automation-service:
+    build:
+      context: ./automation-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./automation-service/src:/workspace/src
+      - ./automation-service/target:/workspace/target
+      - maven-cache:/root/.m2
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8088
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+      - "24678:24678"
+    environment:
+      VITE_HOST: "0.0.0.0"
+
+volumes:
+  maven-cache:

@@ -1,0 +1,68 @@
+services:
+  api-gateway:
+    image: myapp/gateway:latest
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  ads-service:
+    image: myapp/ads-service:latest
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  analytics-service:
+    image: myapp/analytics-service:latest
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  auth-service:
+    image: myapp/auth-service:latest
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  task-service:
+    image: myapp/task-service:latest
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  repo-service:
+    image: myapp/repo-service:latest
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  docs-service:
+    image: myapp/docs-service:latest
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  notification-service:
+    image: myapp/notification-service:latest
+    ports:
+      - "8087:8087"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  automation-service:
+    image: myapp/automation-service:latest
+    ports:
+      - "8088:8088"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  frontend:
+    image: myapp/frontend:latest
+    ports:
+      - "3000:3000"

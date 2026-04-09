@@ -1,0 +1,10 @@
+FROM eclipse-temurin:21-jdk
+WORKDIR /workspace
+
+# Pre-copy pom.xml and fetch deps first (layer cache)
+COPY pom.xml .
+RUN mvn dependency:go-offline -q
+
+COPY src ./src
+# Run with devtools on the classpath (included by default in dev scope)
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.devtools.restart.pollInterval=1000"]

@@ -1,0 +1,7 @@
+# application-dev.yml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydb_dev
+logging:
+  level:
+    root: DEBUG
