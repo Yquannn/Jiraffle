@@ -1,11 +1,16 @@
 package com.pms.common.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@AllArgsConstructor
-@Getter
 public class Message {
-
     private String text;
+
+    public Message() {
+    }
+
+    public Message(String text) {
+        this.text = text;
+    }
+
+    public String getText() {
+        return text;
+    }
 }

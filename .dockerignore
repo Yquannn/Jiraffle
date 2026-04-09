@@ -1,0 +1,8 @@
+**/target/
+**/.git/
+**/.idea/
+**/.DS_Store/
+**/node_mudules/
+**/*.md
+**/.env
+**/logs/
